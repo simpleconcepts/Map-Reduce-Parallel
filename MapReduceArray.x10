@@ -1,3 +1,5 @@
+import x10.util.ArrayBuilder;
+
 public class MapReduceArray[M, R]
 {
 	private def distSequential(mr:MapReduce[M, R], data:Array[M], start:int, length:int):R {
@@ -14,7 +16,19 @@ public class MapReduceArray[M, R]
 		}
 	}
 
+        public def distribute(mr:MapReduce[M, R], data:Array[M]) {
+            return distSequential(mr, data, 0, data.size);
+        }
+
 	public static def main(argv:Array[String]) {
-		Console.OUT.println("Hello, World");
-	}
+		Console.OUT.println("Hello World!");
+
+                val mapper:SumIntegers = new SumIntegers();
+                val distributor:MapReduceArray[Int, Int] = new MapReduceArray[Int, Int]();
+                val data:ArrayBuilder[Int] = new ArrayBuilder[Int](16);
+                for (i in 0..15) {
+                    data.add(i + 1);
+                }
+                Console.OUT.println(distributor.distribute(mapper, data.result()));
+        }
 }
