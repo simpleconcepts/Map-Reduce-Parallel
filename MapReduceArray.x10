@@ -25,8 +25,9 @@ public class MapReduceArray[M, R]
 
                 val mapper:SumIntegers = new SumIntegers();
                 val distributor:MapReduceArray[Int, Int] = new MapReduceArray[Int, Int]();
-                val data:ArrayBuilder[Int] = new ArrayBuilder[Int](16);
-                for (i in 0..15) {
+                val numInts = 10000;
+                val data:ArrayBuilder[Int] = new ArrayBuilder[Int](numInts);
+                for (i in 0..(numInts - 1)) {
                     data.add(i + 1);
                 }
                 Console.OUT.println(distributor.distribute(mapper, data.result()));

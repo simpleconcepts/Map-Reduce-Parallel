@@ -1,0 +1,14 @@
+A MapReduce implementation in x10
+
+Alexander Golec
+Kurry Tran
+
+Milestone 1 notes: Performant serial implementation
+
+ - We restrict our input type to a one dimensional array of values.
+ - We take a tree based approach to implementing MapReduce. Our serial 
+   implementation recursively divides the input array in half, until it reaches
+   the leave level.
+ - This tree based implementation was chosen with reusability in mind. Our future
+   parallel version of this project will divide the input array into portions,
+   and call the sequential version on each portion.
