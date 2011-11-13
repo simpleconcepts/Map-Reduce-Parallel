@@ -2,7 +2,7 @@ import x10.util.ArrayBuilder;
 
 public class MapReduceArray[M, R]
 {
-	private def distSequential(mr:MapReduce[M, R], data:Array[M], start:int, length:int):R {
+	private def distSequential(mr:MapReduce[M, R], data:Array[M]{rank==1}, start:int, length:int):R {
 		if (length == 1) {
 			return mr.map(data(start));
 		} else if (length == 2) {
@@ -16,8 +16,44 @@ public class MapReduceArray[M, R]
 		}
 	}
 
-        public def distribute(mr:MapReduce[M, R], data:Array[M]) {
+        public def distributeSequential(mr:MapReduce[M, R], data:Array[M]{rank==1}) {
             return distSequential(mr, data, 0, data.size);
+        }
+
+        private def doParallelChunk(mr:MapReduce[M, R], data:Array[M]{rank==1},
+                                              id:Int, numAsyncs:Int):R {
+            val length = data.region.max(0) + 1;
+            val inputsPerAsync = length / numAsyncs;
+            val start = id * inputsPerAsync;
+            val end = (id == (numAsyncs - 1)) ? length - 1 : (start + inputsPerAsync - 1);
+
+            var accumulator:R = mr.map(data(0));
+
+            for (i in (start + 1)..end) {
+                val value = data(i);
+                accumulator = mr.reduce(accumulator, mr.map(value));
+            }
+
+            return accumulator;
+        }
+
+        public def distributeParallel(mr:MapReduce[M, R], data:Array[M]{rank==1}):R {
+            var numAsyncs:Int = 24;
+            val length = data.region.max(0) + 1;
+
+            if (length < numAsyncs)
+                numAsyncs = length;
+
+            val results = new Array[R](numAsyncs);
+            finish for (id in 0..(numAsyncs - 1)) async {
+                results(id) = doParallelChunk(mr, data, id, numAsyncs);
+            }
+
+            var accumulator:R = results(0);
+            for (i in 1..(numAsyncs - 1)) {
+                accumulator = mr.reduce(accumulator, results(i));
+            }
+            return accumulator;
         }
 
 	public static def main(argv:Array[String]) {
@@ -30,6 +66,9 @@ public class MapReduceArray[M, R]
                 for (i in 0..(numInts - 1)) {
                     data.add(i + 1);
                 }
-                Console.OUT.println(distributor.distribute(mapper, data.result()));
+                val dataArray:Array[Int] = data.result();
+                Console.OUT.println("Sequential result: "+distributor.distributeSequential(mapper, dataArray));
+                Console.OUT.println("Parallel result  : "+distributor.distributeParallel(mapper, dataArray));
         }
 }
+
