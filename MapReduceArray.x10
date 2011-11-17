@@ -27,7 +27,7 @@ public class MapReduceArray[M, R]
             val start = id * inputsPerAsync;
             val end = (id == (numAsyncs - 1)) ? length - 1 : (start + inputsPerAsync - 1);
 
-            var accumulator:R = mr.map(data(0));
+            var accumulator:R = mr.map(data(start));
 
             for (i in (start + 1)..end) {
                 val value = data(i);
