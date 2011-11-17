@@ -37,7 +37,7 @@ public class MapReduceArray[M, R]
             return accumulator;
         }
 
-        public def distributeParallel(mr:MapReduce[M, R], data:Array[M]{rank==1}):R {
+        public def distributeParallel(mr:MapReduce[M, R], data:Array[M]{rank==1}){R haszero}:R {
             var numAsyncs:Int = 24;
             val length = data.region.max(0) + 1;
 
@@ -66,9 +66,17 @@ public class MapReduceArray[M, R]
                 for (i in 0..(numInts - 1)) {
                     data.add(i + 1);
                 }
+
                 val dataArray:Array[Int] = data.result();
-                Console.OUT.println("Sequential result: "+distributor.distributeSequential(mapper, dataArray));
-                Console.OUT.println("Parallel result  : "+distributor.distributeParallel(mapper, dataArray));
+
+                val sequentialResult = distributor.distributeSequential(mapper, dataArray);
+                val parallelResult = distributor.distributeParallel(mapper, dataArray);
+
+                Console.OUT.println("Sequential result: "+sequentialResult);
+                Console.OUT.println("Parallel result  : "+parallelResult);
+
+                if (sequentialResult != parallelResult)
+                    Console.OUT.println("Error: correctness mismatch");
         }
 }
 
