@@ -1,1 +1,5 @@
+The makefile takes as a parameter the name of the target test file. At the
+moment, we have one test file ready:
 
+make TARGET_FILE=SumIntegers.x10
+./a.out

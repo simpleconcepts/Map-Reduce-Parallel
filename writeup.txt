@@ -31,3 +31,8 @@ Milestone 3 notes: Parallel Implementation
    into another, and then return the combined one. This would be a
    for the final implementation, although we didn't pursue it for this
    iteration.
+ - We have been able to demonstrate some scaling, although the lack of scaling
+   more solid scaling results is do in part to the simplicity of our test
+   case. At the moment, our test program performs addition over a large array
+   integers. This program exhibits about a 12x speed increase when using 24
+   asyncs.
