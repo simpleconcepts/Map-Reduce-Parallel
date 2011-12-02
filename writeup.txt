@@ -12,3 +12,22 @@ Milestone 1 notes: Performant serial implementation
  - This tree based implementation was chosen with reusability in mind. Our future
    parallel version of this project will divide the input array into portions,
    and call the sequential version on each portion.
+
+Milestone 3 notes: Parallel Implementation
+
+ - Due to scaling concerns, we have decided to drop our initial approach of a
+   recursive implementation. Instead, we are now splitting the input data into
+   equally sized chunks, with one async operating on each chunk.
+ - A pointer to the input array is passed to each async, together with that
+   asyncs's identifying number. The async computes the bounds of the input
+   it will have to work on, and loops over the inputs.
+ - Each async maintains an accumulator. For each map operation, the async
+   performs a reduce onto the accumulator. In the end, the acculumators for 
+   each async are gathered into an array, and they are all reduced down to a
+   single reduced value after all the asyncs return.
+ - This accumulator strategy has the drawback of requiring a great deal of
+   object allocations, namely one for every input. One way to get around this
+   limitation would be to require that the reduce function combine one input
+   into another, and then return the combined one. This would be a
+   for the final implementation, although we didn't pursue it for this
+   iteration.

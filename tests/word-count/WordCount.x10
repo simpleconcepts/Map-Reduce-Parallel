@@ -15,7 +15,6 @@ public class WordCount implements MapReduce[String,HashMap[String,Int]] {
        var parallelTime:Long = 0;
        static val Meg = 1000*1000;
 
-
 public def map(var arg:String):HashMap[String, Int] {
 	val I = new File(arg);
 	var linenumber:Int = 0;

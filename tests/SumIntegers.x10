@@ -1,4 +1,4 @@
-cimport x10.util.ArrayBuilder;
+import x10.util.ArrayBuilder;
 
 public class TestClass implements MapReduce[Int, Int], Testable {
     private val distributor:MapReduceArray[Int, Int];
