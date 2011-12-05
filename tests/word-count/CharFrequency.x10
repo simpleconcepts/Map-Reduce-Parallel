@@ -76,39 +76,33 @@ public class CharFrequency {
        }
 
        }// end for
-
-       for(var j:Int = 0; j < map.size; j++){
-
-       if(map(j) > 0){
-
-       var c:Char = Char.operator_as(j);      
-       Console.OUT.println(c +": "+map(j));
        
        }
 
-
-
        }
        
-
+      
 
        return map;
 
        }
 
+       public static def reduce(arg1:Array[Int], arg2:Array[Int]):Array[Int]{
+       
+       var combined:Array[Int] = new Array[Int](256);
+       
+       for(var i:Int = 0; i < arg1.size; i++){
+       
+	combined(i) = arg1(i) + arg2(i);
+
+       }
 
 
-	public static def main(args:Array[String]){
+       
+       return combined;       
 
-
-//	val dictionary = "/usr/share/dict/words";
-	val dictionary = "input.txt";
-//	val checker = CharFrequency.make(dictionary);
-	val checker = CharFrequency.map(dictionary);	
-
-
-	}
-
+       }
+       
 
 }// end class 
 
