@@ -22,7 +22,6 @@ public class TestClass implements MapReduce[String,HashMap[String,Int]], Testabl
 	       val I = new File(arg);
 	       var linenumber:Int = 0;
 	       var map:HashMap[String,Int] = new HashMap[String,Int]();
-	
 	for(inputline in I.lines()){
 		var line:String = inputline.trim().toLowerCase();
 		var words:Rail[String] = line.split(" ");
@@ -39,8 +38,7 @@ public class TestClass implements MapReduce[String,HashMap[String,Int]], Testabl
 			}
 		}
 	}
-	
-	return map;	
+		return map;	
 	}
 
        public def removePunctuation(input:String):String{
@@ -53,7 +51,7 @@ public class TestClass implements MapReduce[String,HashMap[String,Int]], Testabl
 	       	   result += input.charAt(i);
 	        }
 	}
-	return word;
+		return word;
 	}
 
 	public def isNotPChar(input:Int):Boolean{
@@ -78,12 +76,11 @@ public class TestClass implements MapReduce[String,HashMap[String,Int]], Testabl
 		return isPChar;
 	}
 
-
 	public  def reduce(var arg1:HashMap[String,Int], var arg2:HashMap[String,Int]):HashMap[String, Int] {
 		var mergedMap:HashMap[String,Int] = new HashMap[String,Int]();
 		var keysMapOne:Set[String] = arg1.keySet();
 		var keysMapTwo:Set[String] = arg2.keySet();
-	for(key in keysMapOne){
+		for(key in keysMapOne){
 		val entryLeft:Box[Int] = arg1.get(key);
 		if(keysMapTwo.contains(key)){
 			var entryRight:Box[Int] = arg2.get(key);
@@ -94,7 +91,7 @@ public class TestClass implements MapReduce[String,HashMap[String,Int]], Testabl
 			mergedMap.put(key,entryLeft.value);
 	}
 		keysMapTwo = arg2.keySet();
-	for(key in keysMapTwo){
+		for(key in keysMapTwo){
 		var entryRight:Box[Int] = arg2.get(key);
 		mergedMap.put(key, entryRight.value);
 	}
