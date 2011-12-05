@@ -8,8 +8,8 @@ X10_NTHREADS := 24
 # general parameters
 SEED=40
 
-# wordcount parameters
-P1=WordCount
+# CharFrequency parameters
+P1=CharFrequency
 DICT_LOC=/usr/share/dict/words
 NUM_WORDS=10
 P1_ASYNCS=1 2 4
@@ -28,6 +28,14 @@ $(P1).%.buildandrun: $(P1).exe
 
 $(P1).exe: $(P1).x10
 	$(X10_PATH)/x10c++ -t -v -report postcompile=1 -o $(P1).exe -optimize -O -NO_CHECKS $(P1).x10
+
+char: CharFrequency.out
+
+CharFrequency.out: CharFrequency.exe
+	./CharFrequency.exe
+
+CharFrequency.exe: CharFrequency.x10
+	$(X10_PATH)/x10c++ -t -v -o CharFrequency.exe -optimize -O -NO_CHECKS CharFrequency.x10
 
 clean:
 	rm -f *.cc *.h *.exe *.inc *.out *.mpi *~ \#*
