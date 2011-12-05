@@ -38,9 +38,10 @@ public class MapReduceArray[M, R]
         return accumulator;
     }
 
-    public def distributeParallel(mr:MapReduce[M, R], data:Array[M]{rank==1}){R haszero}:R {
-        var numAsyncs:Int = 24;
+    public def distributeParallel(mr:MapReduce[M, R], data:Array[M]{rank==1},
+                                  inNumAsyncs:Int){R haszero}:R {
         val length = data.region.max(0) + 1;
+        var numAsyncs:Int = inNumAsyncs;
 
         if (length < numAsyncs)
             numAsyncs = length;
@@ -82,7 +83,9 @@ public class MapReduceArray[M, R]
     */
 
     public static def main(argv:Array[String]) {
-        Console.OUT.println("Hello World!");
+        val numAsyncs = Int.parse(argv(0));
+
+        Console.OUT.println("Running with "+numAsyncs+" asyncs");
 
         val mapper:TestClass = new TestClass();
         var start:Long;
@@ -97,7 +100,7 @@ public class MapReduceArray[M, R]
                              sequentialTime+" milliseconds");
 
         start = Timer.milliTime();
-        mapper.demonstrateParallel();
+        mapper.demonstrateParallel(numAsyncs);
         end = Timer.milliTime();
 
         val parallelTime = end - start;

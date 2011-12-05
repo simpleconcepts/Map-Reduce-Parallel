@@ -26,8 +26,8 @@ public class TestClass implements MapReduce[Int, Int], Testable {
         distributor.distributeSequential(this, data);
     }
 
-    public def demonstrateParallel() {
-        distributor.distributeParallel(this, data);
+    public def demonstrateParallel(numAsyncs:Int) {
+        distributor.distributeParallel(this, data, numAsyncs);
     }
 }
 
