@@ -3,8 +3,6 @@ import x10.io.InputStreamReader.*;
 import x10.io.File;
 import x10.io.ReaderIterator;
 import x10.lang.String;
-import x10.lang.*;
-
 
 public class WordCount implements MapReduce[String,HashMap[String,Int]] {
 
@@ -27,9 +25,8 @@ public def map(var arg:String):HashMap[String, Int] {
 		for(var i:Int = 0; i < length; i++){
 			var obj:Box[Int] = map.get(words(i));
 			var word:String = words(i);
+			word = removePunctuation(word);
 			if(obj == null){
-			      // word = words(i);
-			       word = removePuncuation(word);
 			     map.put(word, 1);
 			}else{
 				var k:Int = obj.value + 1;
@@ -42,65 +39,46 @@ public def map(var arg:String):HashMap[String, Int] {
 	return map;	
 }
 
-public def removePuncuation(input:String):String{
+       public def removePunctuation(input:String):String{
 
        var word:String = input;
-
-       if(word.charAt(0) == '(')
-       	word = word.substring(1,word.length());
-
-	if(word.charAt(0) == '?')
-	   word = word.substring(1,word.length()); 
-
-	if(word.charAt(0) == '.')
-		word = word.substring(1,word.length());
-	
-	if(word.charAt(0) == '!')
-		word = word.substring(1,word.length());
-	
-	if(word.charAt(0) == ',')
-		word = word.substring(1,word.length());
-	
-	if(word.charAt(0) == ';')
-		word = word.substring(1,word.length());
-	
-	if(word.charAt(0) == ':')
-		word = word.substring(1,word.length());
-	
-	if(word.charAt(0) == '\"')
-		word = word.substring(1,word.length());
-	if(word.charAt(0) == '\'')
-		word = word.substring(1,word.length());
-
-	if(word.charAt(0) == '-')
-		word = word.substring(1,word.length());
-
-	if(word.charAt(word.length()-1) == '-')
-		word = word.substring(0,word.length()-1);
-	if(word.charAt(word.length()-1) == '\"'){
-		word = word.substring(0,word.length()-1);
+       var acceptableChars:String = "abcdefghijlmnopqrstuvwxyz0123456789";
+       var result:String = "";
+       for(var i:Int = 0; i < input.length(); i++){
+	       var ascii:Int = input.charAt(i).ord();
+       	       if(!isNotPChar(ascii)){
+	       	   result += input.charAt(i);
+	        }
 	}
-	if(word.charAt(word.length()-1) == '?')
-		word = word.substring(0,word.length()-1);
-	
-	if(word.charAt(word.length()-1) == '.')
-		word = word.substring(0,word.length()-1);
-	
-	if(word.charAt(word.length()-1) == '!')
-		word = word.substring(0,word.length()-1);
-	
-	if(word.charAt(word.length()-1) == ',')
-		word = word.substring(0,word.length()-1);
-	
-	if(word.charAt(word.length()-1) == ';')
-		word = word.substring(0,word.length()-1);
-	
-	if(word.charAt(word.length()-1) == ':')
-		word = word.substring(0,word.length()-1);
-	
 	return word;
+	}
+
+	public def isNotPChar(input:Int):Boolean{
+	       	var ascii:Int = input;	
+		var isPChar:Boolean = false;
+
+		if(ascii.operator>=(33) && ascii.operator<=(64)){
+		    isPChar = true;
+		    return isPChar;
+		}
+		else if (ascii.operator>=(94) && ascii.operator<=(96)){
+		     isPChar = true;
+		     return isPChar;
+		}
+		else if (ascii.operator>=(123) && ascii.operator<=(126)){
+		     isPChar = true;
+		     return isPChar;
+		}
+		else if (ascii.operator>=(48) && ascii.operator<=(57)){
+		     isPChar = true;
+		     return isPChar;
+		}
+
+
+		return isPChar;
 
 	}
+
 
 	public def runInParallel(numAsyncs:Int){
 	

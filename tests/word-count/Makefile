@@ -9,7 +9,7 @@ X10_NTHREADS := 24
 SEED=40
 
 # CharFrequency parameters
-P1=CharFrequency
+P1=WordCount
 DICT_LOC=/usr/share/dict/words
 NUM_WORDS=10
 P1_ASYNCS=1 2 4
