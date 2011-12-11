@@ -9,23 +9,31 @@ public class TestClass implements MapReduce[String , Array[Int]], Testable {
        
        public def this(){
        	      distributor = new MapReduceArray[String , Array[Int]]();
-	      val numFiles = 38;
+	      val numFiles = 37;
 	      val dataBuilder:ArrayBuilder[String] = new ArrayBuilder[String](numFiles);
-	      for(i in 0..(numFiles)){
-	      	    dataBuilder.add("two-cities/data/"+i+".txt");
+	      for(i in 1..(numFiles)){
+	      	    dataBuilder.add("tests/two-cities/data/"+i+".txt");
 	      }
 
 	      data = dataBuilder.result();
        }
        
        public def map(arg:String):Array[Int]{
-              val I = new File(arg);
       	      var map:Array[Int] = new Array[Int](256);
 
-      	       for(var i:Int = 0; i < map.size; i++){
+      	      for(var i:Int = 0; i < map.size; i++){
        	       	        map(i) = 0;
-		}
-      		for(inputline in I.lines()){
+	      }
+              var I:File;
+              var lines:ReaderIterator[String];
+              try { 
+                  I = new File(arg);
+                  lines = I.lines();
+              } catch (FileNotFoundException) {
+                  return map;
+              }
+
+      		for(inputline in lines){
       		    var line:String = inputline.trim().toLowerCase();
       		    var charArray:Array[Char] = line.chars();    
 
