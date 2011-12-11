@@ -1,3 +1,5 @@
+import x10.lang.Place;
+
 
 public class MultiplePlaces {
 
@@ -39,9 +41,11 @@ public class MultiplePlaces {
        }
 
 
-       public static def main(argv:Array[String]]){
+       public static def main(argv:Array[String]){
 
-
+       val div = Place.MAX_PLACES;
+//       val ps = Place.ALL_PLACES;
+       Console.OUT.println("Places: "+div);
 
 
        }
