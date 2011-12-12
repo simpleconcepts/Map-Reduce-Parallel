@@ -1,27 +1,29 @@
 import x10.io.File;
 import x10.util.Random;
-
+import x10.util.ArrayBuilder;
 /**
  * 
  * Distributed Bottom-Up MergeSort with MapReduce
  * Source:http://algs4.cs.princeton.edu/22mergesort/MergeBU.java.html
  */
-public class DistributedSort {
+public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	
-	/*
+
 	private val distributor:MapReduceArray[Array[Int], Array[Int]];
 	private val data:Array[Int];
-	 */
-	/*
+
 	public def this(){
-		distributor = new MapReduceArray[Array[Int], Array[Int]];
-	    val numInts = 10000;
-	    val data:Array[Int] = new Array[Int](numInts);
-	    data = make("tenthousand.txt");
-	    
-		
+	    distributor = new MapReduceArray[Array[Int], Array[Int]];
+	    val numInts = 10000000;
+	    val dataBuilder:ArrayBuilder[Int] = new ArrayBuilder[Int](numInts);
+	    val seed:Int = 100;
+	    val rand = new Random(seed);
+	    for(var i:Int = 0; i < numInts; i++){
+	       dataBuilder.add(rand.nextInt());
+	    }
+	    data = dataBuilder.result();
 	}
-	*/
+	
 	
 	/* Method That Reads in List of Random Numbers */
 	public static def make(filename:String):Array[Int]{
@@ -53,7 +55,6 @@ public class DistributedSort {
 	
 	// stably merge a[lo..m] with a[m+1..hi] using aux[lo..hi]
 	public static def merge(a:Array[Int], aux:Array[Int], lo:Int, m:Int, hi:Int){
-		
 		// copy to aux[]
 		Array.copy(a,0,aux,0,a.size);
 		
@@ -61,15 +62,24 @@ public class DistributedSort {
 		var i:Int = lo;
 		var j:Int = m+1;
 		for(var k:Int = lo; k <= hi; k++){
-			if (i > m)				  a(k) = aux(j++);
-			else if (j > hi) 	      a(k) = aux(i++);
+			if (i > m)		  a(k) = aux(j++);
+			else if (j > hi) 	  a(k) = aux(i++);
 			else if (aux(j) < aux(i)) a(k) = aux(j++);
 			else                      a(k) = aux(i++);
-			
 		}
 		
 	}
+	/*
+	public def map(arg:Array[Int]):Array[Int] {
+	       sort(arg);
+	       return arg;
+	}
 	
+	public def reduce(arg1:Array[Int], arg2:Array[Int]):Array[Int]{     
+
+	}
+	*/
+
 	private static def isSorted(a:Array[Int]):Boolean{
 		for(var i:Int = 1; i < a.size; i++)
 			if (a(i) < a(i-1)) return false;
@@ -99,10 +109,16 @@ public class DistributedSort {
 		}
 		Console.OUT.println();
 	}	
+
+    public def demonstrateSequential() {
+        distributor.distributeSequential(this, data);
+    }
+    
+    public def demonstrateParallel(numAsyncs:Int) {
+        distributor.distributeParallel(this, data, numAyncs);
+    }
 	
-    /**
-     * The main method for the Hello class
-     */
+ 
     public static def main(Array[String]) {
     	
     	val a = [5,6,1,3,8,7,4,11];
