@@ -1,0 +1,14 @@
+CharFrequency.x10
+- Calculate the character frequency for a body of text.
+
+DistributedSort.x10
+- Distributed Bottom-Up MergeSort of an Array of Ints.
+
+QuadraticSieve.x10
+- Prime number factorizations using Quadratic Sieve Algorithm.
+
+SumIntegers.x10
+- Sum an Array of Ints.
+
+WordCount.x10
+- Calculate the word frequency for a body of text.
