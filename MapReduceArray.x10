@@ -42,7 +42,7 @@ public class MapReduceArray[M, R]
                                   inNumAsyncs:Int){R haszero}:R {
         val length = data.region.max(0) + 1;
         var numAsyncs:Int = inNumAsyncs;
-
+	
         if (length < numAsyncs)
             numAsyncs = length;
 
@@ -58,6 +58,48 @@ public class MapReduceArray[M, R]
         return accumulator;
     }
 
+/*    
+    public def doParallelMultiplePlaces(mr:MapReduce[M, R], data:Array[M]{rank==1},
+    	       				inNumAsyncs:Int,inNumPlaces:Int){R haszero}:R {
+	
+	val length = data.region.max(0) + 1;
+	var numAsyncs:Int = inNumAsyncs;
+	var numPlaces:Int = inNumPlaces;
+
+	if (length < numAsyncs)
+	   numAsyncs = length;
+	if(numPlaces > Place.MAX_PLACES)
+	   numPlaces = Place.MAX_PLACES;
+
+	val inputsPerPlace = length/numPlaces;
+	val results = new Array[R](numPlaces);
+
+//	var a = new Array[Array[R]](numPlaces, (i:R)=>new Array[R](data.size/numPlaces));
+	var a = new Array[Array[int]](numPlaces,(i:int)=> new Array[int](1024/numPlaces,(i:int)=>i));
+//	val R = block(data.region, numPlaces);
+	val D = Dist.makeUnique();
+//	for(i in 0..(numPlaces - 1))
+	var results = new Array[R](numPlaces);
+
+	finish for (p in D.places()) {
+	       	   val myA = a(p.id);
+		   async at(p) {
+		   	result(p.id) = distributeParallel(mr,myA,numAsyncs);
+		   }
+	}
+	
+	var accumulator:R = results(0);
+	for (i in 1..(numAsyncs - 1)) {
+	    accumulator = mr.reduce(accumulator, results(i));
+	}
+	
+	return accumulator;					
+
+    }
+    
+*/
+
+    
     /*
     private def correctnessTest() {
         val mapper = new SumIntegers();
