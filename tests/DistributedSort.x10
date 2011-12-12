@@ -7,22 +7,24 @@ import x10.util.ArrayBuilder;
  * Source:http://algs4.cs.princeton.edu/22mergesort/MergeBU.java.html
  *
 */
-public class TestClass implements MapReduce[Int,Array[Int]], Testable {
+public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	
 
-	private val distributor:MapReduceArray[Int, Array[Int]];
-	private val data:Array[Int];
+	private val distributor:MapReduceArray[Array[Int], Array[Int]];
+	private val data:Array[Array[Int]] = new Array[Array[Int]](16);
 
 	public def this(){
-	    distributor = new MapReduceArray[Int, Array[Int]]();
+	    distributor = new MapReduceArray[Array[Int], Array[Int]]();
+	    val numSets = 16;
 	    val numInts = 100;
-	    val dataBuilder:ArrayBuilder[Int] = new ArrayBuilder[Int](numInts);
-	    val seed:Int = 100;
-	    val rand = new Random(seed);
-	    for(var i:Int = 0; i < numInts; i++){
-	       dataBuilder.add(rand.nextInt());
+	    var temp:Array[Int];
+	    for(var j:Int = 0; j < data.size; j++{
+	        temp = new Array[Int](numInts);
+		val rand:Random = new Random(37*i);
+	        for(var i:Int = 0; i < numInts; i++){
+	            temp(i) = rand.nextInt();
 	    }
-	    data = dataBuilder.result();
+	    data(j) = temp;
 	}
 	
 	/* Method That Reads in List of Random Numbers */
@@ -129,7 +131,6 @@ public class TestClass implements MapReduce[Int,Array[Int]], Testable {
 	public def demonstrateParallel(numAsyncs:Int) {
                distributor.distributeParallel(this, data, numAsyncs);
     	}
-	
  
 	public static def main(Array[String]) {
     	       val a = [5,6,1,3,8,7,4,11];
