@@ -8,23 +8,24 @@ import x10.util.ArrayBuilder;
  *
 */
 public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
-	
-
 	private val distributor:MapReduceArray[Array[Int], Array[Int]];
-	private val data:Array[Array[Int]] = new Array[Array[Int]](16);
+	private val data:Array[Array[Int]];
 
 	public def this(){
 	    distributor = new MapReduceArray[Array[Int], Array[Int]]();
 	    val numSets = 16;
 	    val numInts = 100;
 	    var temp:Array[Int];
-	    for(var j:Int = 0; j < data.size; j++{
+	    val dataBuilder:ArrayBuilder[Array[Int]] = new ArrayBuilder[Array[Int]](numSets);
+	    for(var j:Int = 0; j < numSets; j++){
 	        temp = new Array[Int](numInts);
-		val rand:Random = new Random(37*i);
+		val rand:Random = new Random(37*j);
 	        for(var i:Int = 0; i < numInts; i++){
 	            temp(i) = rand.nextInt();
+	    	}
+	        dataBuilder.add(temp);	
 	    }
-	    data(j) = temp;
+	    data = dataBuilder.result();
 	}
 	
 	/* Method That Reads in List of Random Numbers */
@@ -125,22 +126,30 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	}	
 
     	public def demonstrateSequential() {
-               distributor.distributeSequential(this, data);
-    	}
+               val result = data(0);
+	       Console.OUT.println("Result Size: "+result.size);
+    	       Console.OUT.println("Size of Data: "+data.size);
+	       distributor.distributeSequential(this, data);
+	}
     
 	public def demonstrateParallel(numAsyncs:Int) {
                distributor.distributeParallel(this, data, numAsyncs);
     	}
- 
+	
+	public def demonstrateMultiplePlaces(numAsyncs:Int, numPlaces:Int) {
+	       distributor.distributeMultiplePlaces(this, data,numAsyncs,numPlaces);
+	}
+    /* 
 	public static def main(Array[String]) {
     	       val a = [5,6,1,3,8,7,4,11];
-    	       val result = sort(a);
+    	       val result = map(a);
     	       Console.OUT.print("The sorted array: ");
 	       show(result);
-	       val merged = mergeReduce(a,a);
+	       val merged = reduce(a,a);
 	       Console.OUT.print("The merged array: ");
 	       show(merged);
     }
+    */
 
 }
 

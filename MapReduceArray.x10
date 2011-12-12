@@ -4,7 +4,8 @@ import x10.util.ArrayBuilder;
 public class MapReduceArray[M, R]
 {
     private def distSequential(mr:MapReduce[M, R], data:Array[M]{rank==1}, start:int, length:int):R {
-            if (length == 1) {
+           	   
+	    if (length == 1) {
                     return mr.map(data(start));
             } else if (length == 2) {
                     return mr.reduce(mr.map(data(start)), mr.map(data(start + 1)));
@@ -57,9 +58,8 @@ public class MapReduceArray[M, R]
         }
         return accumulator;
     }
-
-/*    
-    public def doParallelMultiplePlaces(mr:MapReduce[M, R], data:Array[M]{rank==1},
+    
+    public def distributeMultiplePlaces(mr:MapReduce[M, R], data:Array[M]{rank==1},
     	       				inNumAsyncs:Int,inNumPlaces:Int){R haszero}:R {
 	
 	val length = data.region.max(0) + 1;
@@ -73,19 +73,18 @@ public class MapReduceArray[M, R]
 
 	val inputsPerPlace = length/numPlaces;
 	val results = new Array[R](numPlaces);
-
-//	var a = new Array[Array[R]](numPlaces, (i:R)=>new Array[R](data.size/numPlaces));
-	var a = new Array[Array[int]](numPlaces,(i:int)=> new Array[int](1024/numPlaces,(i:int)=>i));
-//	val R = block(data.region, numPlaces);
 	val D = Dist.makeUnique();
-//	for(i in 0..(numPlaces - 1))
 	var results = new Array[R](numPlaces);
-
+	var a:Array[Array[Array[Int]]] = new Array[Array[Array[Int]]](numPlaces);
+	
 	finish for (p in D.places()) {
-	       	   val myA = a(p.id);
+	       
+	       	   val myA = data(p.id);
+		   
 		   async at(p) {
 		   	result(p.id) = distributeParallel(mr,myA,numAsyncs);
 		   }
+		   
 	}
 	
 	var accumulator:R = results(0);
@@ -97,7 +96,7 @@ public class MapReduceArray[M, R]
 
     }
     
-*/
+
 
     
     /*
@@ -125,8 +124,8 @@ public class MapReduceArray[M, R]
     */
 
     public static def main(argv:Array[String]) {
-        val numAsyncs = Int.parse(argv(0));
-
+       // val numAsyncs = Int.parse(argv(0));
+        val numAsyncs = 4;
         Console.OUT.println("Running with "+numAsyncs+" asyncs");
 
         val mapper:TestClass = new TestClass();
@@ -156,6 +155,7 @@ public class MapReduceArray[M, R]
             val speedup =(sequentialTime as Float) / parallelTime;
             Console.OUT.println("Parallel speedup saw improvement of "+speedup);
         }
+
     }
 }
 
