@@ -5,16 +5,17 @@ import x10.util.ArrayBuilder;
  * 
  * Distributed Bottom-Up MergeSort with MapReduce
  * Source:http://algs4.cs.princeton.edu/22mergesort/MergeBU.java.html
- */
-public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
+ *
+*/
+public class TestClass implements MapReduce[Int,Array[Int]], Testable {
 	
 
-	private val distributor:MapReduceArray[Array[Int], Array[Int]];
+	private val distributor:MapReduceArray[Int, Array[Int]];
 	private val data:Array[Int];
 
 	public def this(){
-	    distributor = new MapReduceArray[Array[Int], Array[Int]];
-	    val numInts = 10000000;
+	    distributor = new MapReduceArray[Int, Array[Int]]();
+	    val numInts = 100;
 	    val dataBuilder:ArrayBuilder[Int] = new ArrayBuilder[Int](numInts);
 	    val seed:Int = 100;
 	    val rand = new Random(seed);
@@ -23,7 +24,6 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	    }
 	    data = dataBuilder.result();
 	}
-	
 	
 	/* Method That Reads in List of Random Numbers */
 	public static def make(filename:String):Array[Int]{
@@ -49,9 +49,20 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 
 	}
 	
-	
-	
-	
+	public static def mergeReduce(left:Array[Int],right:Array[Int]):Array[Int]{
+	       val N = left.size + right.size;
+	       var result:Array[Int] = new Array[Int](N);
+	       var i:Int = 0, leftPos:Int = 0, rightPos:Int = 0, leftSize:Int = left.size, rightSize:Int = right.size;
+	       while(leftPos < leftSize && rightPos < rightSize)
+	           result(i++) = (left(leftPos) <= right(rightPos))
+		   	       ? left(leftPos++)
+			       : right(rightPos++);
+	       while (leftPos < leftSize)
+	           result(i++) = left(leftPos++);
+	       while (rightPos < rightSize)
+	           result(i++) = right(rightPos++);
+	       return result;
+	 }	
 	
 	// stably merge a[lo..m] with a[m+1..hi] using aux[lo..hi]
 	public static def merge(a:Array[Int], aux:Array[Int], lo:Int, m:Int, hi:Int){
@@ -69,16 +80,16 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 		}
 		
 	}
-	/*
-	public def map(arg:Array[Int]):Array[Int] {
-	       sort(arg);
-	       return arg;
+	
+	public def map(arg:Array[Int]):Array[Int]{
+	       val result = sort(arg);
+	       return result;
 	}
 	
 	public def reduce(arg1:Array[Int], arg2:Array[Int]):Array[Int]{     
-
+	       val result = mergeReduce(arg1,arg2);
+	       return result;
 	}
-	*/
 
 	private static def isSorted(a:Array[Int]):Boolean{
 		for(var i:Int = 1; i < a.size; i++)
@@ -87,7 +98,7 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	}
 	
 	// bottom-up mergesort
-	public static def sort(a:Array[Int]){
+	public static def sort(a:Array[Int]):Array[Int]{
 		val N = a.size;
 		val aux:Array[Int] = new Array[Int](N);
 		for(var n:Int = 1; n < N; n = n+n){
@@ -100,6 +111,7 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 			
 		}
 		assert isSorted(a);
+		return aux;
 	}
 	
 	// print array to standard output
@@ -110,20 +122,23 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 		Console.OUT.println();
 	}	
 
-    public def demonstrateSequential() {
-        distributor.distributeSequential(this, data);
-    }
+    	public def demonstrateSequential() {
+               distributor.distributeSequential(this, data);
+    	}
     
-    public def demonstrateParallel(numAsyncs:Int) {
-        distributor.distributeParallel(this, data, numAyncs);
-    }
+	public def demonstrateParallel(numAsyncs:Int) {
+               distributor.distributeParallel(this, data, numAsyncs);
+    	}
 	
  
-    public static def main(Array[String]) {
-    	
-    	val a = [5,6,1,3,8,7,4,11];
-    	sort(a);
-    	show(a);
+	public static def main(Array[String]) {
+    	       val a = [5,6,1,3,8,7,4,11];
+    	       val result = sort(a);
+    	       Console.OUT.print("The sorted array: ");
+	       show(result);
+	       val merged = mergeReduce(a,a);
+	       Console.OUT.print("The merged array: ");
+	       show(merged);
     }
 
 }
