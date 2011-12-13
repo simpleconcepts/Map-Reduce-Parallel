@@ -6,7 +6,7 @@ public class TestClass implements MapReduce[Int, Int], Testable {
 
     public def this() {
         distributor = new MapReduceArray[Int, Int]();
-        val numInts = 1000000;
+        val numInts = 10000000;
         val dataBuilder:ArrayBuilder[Int] = new ArrayBuilder[Int](numInts);
         for (i in 0..(numInts - 1)) {
             dataBuilder.add(i + 1);
@@ -28,6 +28,10 @@ public class TestClass implements MapReduce[Int, Int], Testable {
 
     public def demonstrateParallel(numAsyncs:Int) {
         distributor.distributeParallel(this, data, numAsyncs);
+    }
+
+    public def describe() {
+        return "SumIntegers";
     }
 }
 
