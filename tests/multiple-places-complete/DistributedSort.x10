@@ -31,35 +31,76 @@ public class DistributedSort{
 	       val numInts:Int = 100;
 	       val numPlaces = 3;
                val inputsPerPlace:Int = 100;
-	       val results:Array[Array[Int]] = new Array[Array[Int]](Place.MAX_PLACES,(i:Int)=>new Array[Int](10));
 	       val D = Dist.makeUnique();
-	       val b:Array[Int] = [9,8,7,6,5,4,3,2,1,0];
-	       val c:Array[Int] = [20,19,18,17,16,15,14,13,12,11,10];
-	       val e:Array[Int] = [31,30,29,28,27,26,25,24,23,22,21];
+	       val b:Array[Int] = [9,8,7,6,5,4,3,2];
+	       val c:Array[Int] = [20,19,18,17,16,15,14,13];
+	       val e:Array[Int] = [31,30,29,28,27,26,25,24];
+	      
+	       Console.OUT.print("Input: ");
+	       Console.OUT.print(b.toString()+c.toString()+e.toString());
 	       val a = new Array[Array[Int]](numPlaces);
-
+	       
+	       val pl1ref:Array[String] = new Array[String](1);
+	       val pl2ref:Array[String] = new Array[String](1);
+	       val pl3ref:Array[String] = new Array[String](1);
+	       
+	       val argref1 = new GlobalRef[Array[String](1)](pl1ref);
+	       val argref2 = new GlobalRef[Array[String](1)](pl2ref);
+	       val argref3 = new GlobalRef[Array[String](1)](pl3ref);
 	       finish for (p in Place.places()) {
 	       	       val myA = a(p.id);
 
 		       async at(p) {
-		       	     if(p.id == 0) {Console.OUT.print("Before: ");compute(map(b));val x = map(b);val str = compute(x);Console.OUT.println("After: "+str);}
-			     if(p.id ==	1) {Console.OUT.print("Before: ");compute(map(c));val x = map(c);val str = compute(x);Console.OUT.println("After: "+str);}
-			     if(p.id ==	2) {Console.OUT.print("Before: ");compute(map(e));val x = map(e);val str = compute(x);Console.OUT.println("After: "+str);}
+		       	     if(p.id == 0) {compute(map(b),argref1);}
+			     if(p.id ==	1) {compute(map(c),argref2);}
+			     if(p.id ==	2) {compute(map(e),argref3);}
 	       		     }
 			    
 	           }
-		  
-	           var accumulator:Array[Int] = reduce(a(0),a(1));
-		   accumulator = reduce(accumulator,a(2));
-	    	   return accumulator;
+		   val lh = toIntArray(pl1ref(0).substring(1,pl1ref(0).length()-1));
+		   val mh = toIntArray(pl2ref(0).substring(1,pl2ref(0).length()-1));
+		   val rh = toIntArray(pl3ref(0).substring(1,pl3ref(0).length()-1));
+		   var accumulator:Array[Int] = reduce(lh,mh);
+		   accumulator = reduce(accumulator,rh);
+		   Console.OUT.println();
+		   val result = map(accumulator);
+	    	   return result;
 	}
 
-	public static def compute(data:Array[Int]) {
-	       show(data);
-	       var str:String = data.toString();
-	       return str;
+	public static def toIntArray(dataStr:String):Array[Int]{
+	       val data = dataStr.split(",");
+	       val result:Array[Int] = new Array[Int](data.size);
+	       finish for(id in 0..(data.size-1)) async {
+	       	      result(id) = Int.parseInt(data(id));
+	       }
+	       return result;
 	}
 
+	public static def compute(data:Array[Int],argref:GlobalRef[Array[String](1)]) {
+	       val str:String = data.toString();
+	       at(argref){
+	           val argv = argref();
+	           argv(0) = str;
+	       }
+	}
+	
+	public static def parseReduce(str1:String, str2:String){
+	       val dataStr1 = str1.substring(1,str1.length()-1);
+	       val dataStr2 = str2.substring(1,str2.length()-1);
+	       var data1:Array[String] = dataStr1.split(",");
+	       var data2:Array[String] = dataStr2.split(",");
+	       var dataInt1:Array[Int] = new Array[Int](data1.size);
+	       var dataInt2:Array[Int] = new Array[Int](data2.size);
+	       finish for(id in 0..(data1.size - 1)) async{
+	       	       dataInt1(id) = Int.parseInt(data1(id));
+	       }
+	       finish for(id in 0..(data2.size-1)) async{
+	       	  dataInt2(id) = Int.parseInt(data2(id));
+	       }
+	       
+	       val result = reduce(dataInt1,dataInt2);
+	       return result.toString();
+	}
 	
 	/* Method That Reads in List of Random Numbers */
 	public static def make(filename:String):Array[Int]{
@@ -194,12 +235,12 @@ public class DistributedSort{
 	       Console.OUT.print("The merged array: ");
 	       show(merged);
 	       */
-
+	       
 	      
 	              val multiple = doParallelMultiplePlaces();
+		      Console.OUT.print("Output: ");
 		      show(multiple);
-
-	      
+		      	      
     }
     
 
