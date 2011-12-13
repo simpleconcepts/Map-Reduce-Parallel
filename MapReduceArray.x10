@@ -155,6 +155,7 @@ public class MapReduceArray[M, R]
         } else {
             val speedup =(sequentialTime as Float) / parallelTime;
             Console.OUT.println("Parallel speedup saw improvement of "+speedup);
+            Console.OUT.println("FrameworkTag: "+numAsyncs+" "+speedup);
         }
     }
 }

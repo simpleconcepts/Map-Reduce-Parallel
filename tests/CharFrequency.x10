@@ -64,10 +64,9 @@ public class TestClass implements MapReduce[String , Array[Int]], Testable {
        	      distributor.distributeParallel(this, data, numAsyncs);
        }
 
-
-
-       
-
+       public def describe() {
+              return "Character Frequency Counter - A Tale of Two Cities";
+       }
 }
 
 
