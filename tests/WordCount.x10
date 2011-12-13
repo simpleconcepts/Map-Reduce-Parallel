@@ -106,6 +106,8 @@ public class TestClass implements MapReduce[String,HashMap[String,Int]], Testabl
 	       distributor.distributeParallel(this, data, numAsyncs);
 	}
 
-
+        public def describe() {
+            return "Word Count - A Tale of Two Cities";
+        }
 }
 

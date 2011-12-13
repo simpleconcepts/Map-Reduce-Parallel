@@ -202,6 +202,8 @@ public class DistributedSort{
 	      
     }
     
-
+    public def describe() {
+        return "Multiple Place Distributed Sort";
+    }
 }
 

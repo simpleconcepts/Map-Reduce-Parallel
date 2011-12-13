@@ -153,5 +153,8 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
     }
     */
 
+    public def describe() {
+        return "Distributed Sort";
+    }
 }
 
