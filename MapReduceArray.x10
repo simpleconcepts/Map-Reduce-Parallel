@@ -1,10 +1,12 @@
 import x10.util.Timer;
 import x10.util.ArrayBuilder;
+import x10.lang.Place;
 
 public class MapReduceArray[M, R]
 {
     private def distSequential(mr:MapReduce[M, R], data:Array[M]{rank==1}, start:int, length:int):R {
-            if (length == 1) {
+           	   
+	    if (length == 1) {
                     return mr.map(data(start));
             } else if (length == 2) {
                     return mr.reduce(mr.map(data(start)), mr.map(data(start + 1)));
@@ -57,44 +59,43 @@ public class MapReduceArray[M, R]
         }
         return accumulator;
     }
-
 /*    
-    public def doParallelMultiplePlaces(mr:MapReduce[M, R], data:Array[M]{rank==1},
-    	       				inNumAsyncs:Int,inNumPlaces:Int){R haszero}:R {
+    public def distributeMultiplePlaces(mr:MapReduce[M, R], data:Array[M]{rank==1},
+    	       				inNumAsyncs:Int,inNumPlaces:Int) {
 	
 	val length = data.region.max(0) + 1;
-	var numAsyncs:Int = inNumAsyncs;
-	var numPlaces:Int = inNumPlaces;
-
-	if (length < numAsyncs)
-	   numAsyncs = length;
-	if(numPlaces > Place.MAX_PLACES)
-	   numPlaces = Place.MAX_PLACES;
-
+	var numAsyncsTemp:Int = inNumAsyncs;
+	var numPlacesTemp:Int = inNumPlaces;
+	if (length < numAsyncsTemp)
+	   numAsyncsTemp = length;
+	if(numPlacesTemp > Place.MAX_PLACES)
+	   numPlacesTemp = Place.MAX_PLACES;
+	val numAsyncs:Int = numAsyncsTemp; 
+	val numPlaces:Int = numPlacesTemp;
 	val inputsPerPlace = length/numPlaces;
-	val results = new Array[R](numPlaces);
-
-//	var a = new Array[Array[R]](numPlaces, (i:R)=>new Array[R](data.size/numPlaces));
-	var a = new Array[Array[int]](numPlaces,(i:int)=> new Array[int](1024/numPlaces,(i:int)=>i));
-//	val R = block(data.region, numPlaces);
 	val D = Dist.makeUnique();
-//	for(i in 0..(numPlaces - 1))
-	var results = new Array[R](numPlaces);
+	val results = new Array[R](numPlaces);
+	/*
+	var a:Array[Array[Int]] = new Array[Array[Array[Int]]](numPlaces,(i:Int)=> new Array[Int](100,0));
+	Array.copy(data,0,a(0),0,5);
+	Array.copy(data,5,a(1),5,5);
+	Array.copy(data,10,a(2),10,5);
+	*/
+	//val a = new Array[Array[Int]](16,(i:Int)=>new Array[Int](10000000,(i:int)=> rand.nextInt(i)))));
+	val a = [[1,2,3,4,5,5],[6,7,6,4,3,2],[3,23,12,54,76,45]];
+	val b = [[9,7,6,34,33,23,65,12,323]];
 
 	finish for (p in D.places()) {
-	       	   val myA = a(p.id);
+	       	   val myA = data(p.id);
 		   async at(p) {
-		   	result(p.id) = distributeParallel(mr,myA,numAsyncs);
+//		   	results(p.id) = data;
 		   }
 	}
-	
-	var accumulator:R = results(0);
-	for (i in 1..(numAsyncs - 1)) {
-	    accumulator = mr.reduce(accumulator, results(i));
-	}
-	
-	return accumulator;					
-
+//	var accumulator:R = new Array[R](1);
+//	for (i in 1..2) {
+//	    accumulator = mr.reduce(accumulator, a(i));
+//	}
+//	return accumulator;					
     }
     
 */
@@ -125,8 +126,9 @@ public class MapReduceArray[M, R]
     */
 
     public static def main(argv:Array[String]) {
-        val numAsyncs = Int.parse(argv(0));
-
+       // val numAsyncs = Int.parse(argv(0));
+        val numAsyncs = 4;
+	val numPlaces = 3;
         Console.OUT.println("Running with "+numAsyncs+" asyncs");
 
         val mapper:TestClass = new TestClass();
@@ -148,7 +150,14 @@ public class MapReduceArray[M, R]
         val parallelTime = end - start;
         Console.OUT.println("Parallel map reduce benchmark completed in "+
                              parallelTime+" milliseconds");
-
+	
+	start = Timer.milliTime();
+//	mapper.demonstrateMultiplePlaces(numAsyncs,numPlaces);
+	end = Timer.milliTime();
+	val multipleTime = end - start;
+	Console.OUT.println("Multiple Place map reduce benchmark completed in "+
+				      	   multipleTime+" milliseconds" );
+	
         if (parallelTime.bitCount() == 0) {
             Console.OUT.println("Parallel computation completed in less than a millisecond.");
             Console.OUT.println("Not showing comparison results");
@@ -157,6 +166,7 @@ public class MapReduceArray[M, R]
             Console.OUT.println("Parallel speedup saw improvement of "+speedup);
             Console.OUT.println("FrameworkTag: "+numAsyncs+" "+speedup);
         }
+
     }
 }
 

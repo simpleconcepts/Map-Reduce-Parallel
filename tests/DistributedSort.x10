@@ -7,20 +7,24 @@ import x10.util.ArrayBuilder;
  * Source:http://algs4.cs.princeton.edu/22mergesort/MergeBU.java.html
  *
 */
-public class TestClass implements MapReduce[Int,Array[Int]], Testable {
-	
 
-	private val distributor:MapReduceArray[Int, Array[Int]];
-	private val data:Array[Int];
+public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
+	private val distributor:MapReduceArray[Array[Int], Array[Int]];
+	private val data:Array[Array[Int]];
 
 	public def this(){
-	    distributor = new MapReduceArray[Int, Array[Int]]();
+	    distributor = new MapReduceArray[Array[Int], Array[Int]]();
+	    val numSets = 15;
 	    val numInts = 100;
-	    val dataBuilder:ArrayBuilder[Int] = new ArrayBuilder[Int](numInts);
-	    val seed:Int = 100;
-	    val rand = new Random(seed);
-	    for(var i:Int = 0; i < numInts; i++){
-	       dataBuilder.add(rand.nextInt());
+	    var temp:Array[Int];
+	    val dataBuilder:ArrayBuilder[Array[Int]] = new ArrayBuilder[Array[Int]](numSets);
+	    for(var j:Int = 0; j < numSets; j++){
+	        temp = new Array[Int](numInts);
+		val rand:Random = new Random(37*j);
+	        for(var i:Int = 0; i < numInts; i++){
+	            temp(i) = rand.nextInt();
+	    	}
+	        dataBuilder.add(temp);	
 	    }
 	    data = dataBuilder.result();
 	}
@@ -123,23 +127,31 @@ public class TestClass implements MapReduce[Int,Array[Int]], Testable {
 	}	
 
     	public def demonstrateSequential() {
-               distributor.distributeSequential(this, data);
-    	}
+               val result = data(0);
+	       Console.OUT.println("Result Size: "+result.size);
+    	       Console.OUT.println("Size of Data: "+data.size);
+	       distributor.distributeSequential(this, data);
+	}
     
 	public def demonstrateParallel(numAsyncs:Int) {
-               distributor.distributeParallel(this, data, numAsyncs);
+               distributor.distributeParallel(this.distributor, data, numAsyncs);
     	}
-	
- 
+	/*
+	public def demonstrateMultiplePlaces(numAsyncs:Int, numPlaces:Int) {
+	       distributor.distributeMultiplePlaces(this, data,numAsyncs,numPlaces);
+	}
+	*/
+    /* 
 	public static def main(Array[String]) {
     	       val a = [5,6,1,3,8,7,4,11];
-    	       val result = sort(a);
+    	       val result = map(a);
     	       Console.OUT.print("The sorted array: ");
 	       show(result);
-	       val merged = mergeReduce(a,a);
+	       val merged = reduce(a,a);
 	       Console.OUT.print("The merged array: ");
 	       show(merged);
     }
+    */
 
 }
 
