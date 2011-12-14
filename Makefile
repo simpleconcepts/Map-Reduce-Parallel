@@ -9,7 +9,7 @@ NUM_ASYNCS=1 2 4 8 16 24 32 64 128
 NUM_TRIALS=3
 NUM_INTS=100
 SEED=40
-INPUT_SIZE=100
+INPUT_SIZE=10000000
 
 
 default:MapReduceArray.out
@@ -17,7 +17,7 @@ default:MapReduceArray.out
 MapReduceArray.out: $(NUM_ASYNCS:%=MapReduceArray.%.buildandrun)
 
 MapReduceArray.%.buildandrun: MapReduceArray.exe
-	salloc -N 3 -n 3 srun.x10sock ./MapReduceArray.exe  $(INPUT_SIZE) $(NUM_TRIALS) $(NUM_TRIALS) $* > MapReduceArray.$*.out
+	salloc -n1 srun.x10sock ./MapReduceArray.exe  $(INPUT_SIZE) $(NUM_TRIALS) $* > MapReduceArray.$*.out
 	@echo "Dumping contents of $(P1).$*.out ... "
 	@grep "" MapReduceArray.$*.out
 	@echo " "
