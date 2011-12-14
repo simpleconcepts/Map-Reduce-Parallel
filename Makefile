@@ -3,7 +3,7 @@ X10CPP=/opt/x10-2.2.0.1/bin/x10c++
 # environment variables
 X10_NTHREADS := 24
 X10_NPLACES := 3
-NUM_ASYNCS = 1 2 4 8 16 32 64 128
+NUM_ASYNCS = 1 1 1 2 2 2 4 4 4 8 8 8 16 16 16 32 32 32 64 64 64 128 128 128 
 
 # DitributedSort Parameters
 P1=TestClass

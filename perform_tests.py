@@ -20,15 +20,23 @@ def run_test(test_name, tag):
             numasyncs = float(split[-2])
             speedup = float(split[-1])
             description = ' '.join(split[1:3])
-            ret.append( ( description, numasyncs, speedup )) )
-    return ret
+            ret[numasyncs].append( ( description, numasyncs, speedup ) )
+    out = []
+    for i in ret:
+        v = ret[i]
+        k = [j[2] for j in v]
+        avg = sum(k) / len(k)
+        out.append( (v[0][0], i, avg) )
+    out.sort(key = lambda d: d[1])
+    print out
+    return out
 
 import math
 
 def report_test(test_results, name):
     x = [i[1] for i in test_results]
     y = [i[2] for i in test_results]
-    plot(x, y, 'b', label='Scalability Results For %s' % (name,))
+    plot(x, y, 'bo-', label='Scalability Results For %s' % (name,))
     title(test_results[0][0])
     ybound = min(max(x), max(y))
     print ybound
