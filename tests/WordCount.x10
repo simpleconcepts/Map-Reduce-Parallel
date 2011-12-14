@@ -1,8 +1,6 @@
 import x10.util.*;
-import x10.io.InputStreamReader.*;
-import x10.io.File;
-import x10.io.ReaderIterator;
-import x10.lang.String;
+import x10.io.*;
+import x10.lang.*;
 
 public class TestClass implements MapReduce[String,HashMap[String,Int]], Testable {
         private val distributor:MapReduceArray[String, HashMap[String, Int]];
@@ -19,10 +17,18 @@ public class TestClass implements MapReduce[String,HashMap[String,Int]], Testabl
 	}
 
 	public def map(var arg:String):HashMap[String, Int] {
-	       val I = new File(arg);
-	       var linenumber:Int = 0;
+	       var I:File;
 	       var map:HashMap[String,Int] = new HashMap[String,Int]();
-	       for(inputline in I.lines()){
+	       var lines:ReaderIterator[String];
+	       try {
+	       	   I = new File(arg);
+		   lines = I.lines();
+	       } catch (FileNotFoundException) {
+	       	  return map;
+	       }
+	       var linenumber:Int = 0;
+	      
+	       for(inputline in lines){
 	           var line:String = inputline.trim().toLowerCase();
 		   var words:Rail[String] = line.split(" ");
 		   var length:Int = words.size;
