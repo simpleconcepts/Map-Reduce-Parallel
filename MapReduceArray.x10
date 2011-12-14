@@ -59,6 +59,7 @@ public class MapReduceArray[M, R]
         }
         return accumulator;
     }
+
 /*    
     public def distributeMultiplePlaces(mr:MapReduce[M, R], data:Array[M]{rank==1},
     	       				inNumAsyncs:Int,inNumPlaces:Int) {
@@ -75,31 +76,32 @@ public class MapReduceArray[M, R]
 	val inputsPerPlace = length/numPlaces;
 	val D = Dist.makeUnique();
 	val results = new Array[R](numPlaces);
-	/*
+
 	var a:Array[Array[Int]] = new Array[Array[Array[Int]]](numPlaces,(i:Int)=> new Array[Int](100,0));
 	Array.copy(data,0,a(0),0,5);
 	Array.copy(data,5,a(1),5,5);
 	Array.copy(data,10,a(2),10,5);
-	*/
-	//val a = new Array[Array[Int]](16,(i:Int)=>new Array[Int](10000000,(i:int)=> rand.nextInt(i)))));
+
+	val a = new Array[Array[Int]](16,(i:Int)=>new Array[Int](10000000,(i:int)=> rand.nextInt(i)))));
+
 	val a = [[1,2,3,4,5,5],[6,7,6,4,3,2],[3,23,12,54,76,45]];
 	val b = [[9,7,6,34,33,23,65,12,323]];
 
 	finish for (p in D.places()) {
 	       	   val myA = data(p.id);
 		   async at(p) {
-//		   	results(p.id) = data;
+		   	results(p.id) = data;
 		   }
 	}
-//	var accumulator:R = new Array[R](1);
-//	for (i in 1..2) {
-//	    accumulator = mr.reduce(accumulator, a(i));
-//	}
-//	return accumulator;					
-    }
-    
-*/
 
+
+	var accumulator:R = new Array[R](1);
+	for (i in 1..2) {
+	    accumulator = mr.reduce(accumulator, a(i));
+	}
+	return accumulator;					
+}
+*/
     
     /*
     private def correctnessTest() {
