@@ -15,7 +15,7 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	public def this(){
 	    distributor = new MapReduceArray[Array[Int], Array[Int]]();
 	    val numSets = 15;
-	    val numInts = 100;
+	    val numInts = 1000;
 	    var temp:Array[Int];
 	    val dataBuilder:ArrayBuilder[Array[Int]] = new ArrayBuilder[Array[Int]](numSets);
 	    for(var j:Int = 0; j < numSets; j++){
@@ -87,6 +87,7 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	
 	public def map(arg:Array[Int]):Array[Int]{
 	       val result = sort(arg);
+
 	       return result;
 	}
 	
@@ -114,7 +115,7 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 			}
 			
 		}
-		assert isSorted(a);
+		//assert isSorted(a);
 		return aux;
 	}
 	
@@ -134,7 +135,7 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	}
     
 	public def demonstrateParallel(numAsyncs:Int) {
-               distributor.distributeParallel(this.distributor, data, numAsyncs);
+               distributor.distributeParallel(this, data, numAsyncs);
     	}
 	/*
 	public def demonstrateMultiplePlaces(numAsyncs:Int, numPlaces:Int) {
