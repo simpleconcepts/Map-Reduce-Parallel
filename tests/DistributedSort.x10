@@ -137,11 +137,11 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	public def demonstrateParallel(numAsyncs:Int) {
                distributor.distributeParallel(this, data, numAsyncs);
     	}
-	/*
+	
 	public def demonstrateMultiplePlaces(numAsyncs:Int, numPlaces:Int) {
 	       distributor.distributeMultiplePlaces(this, data,numAsyncs,numPlaces);
 	}
-	*/
+	
     /* 
 	public static def main(Array[String]) {
     	       val a = [5,6,1,3,8,7,4,11];
