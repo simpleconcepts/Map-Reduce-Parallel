@@ -3,8 +3,7 @@ import x10.util.ArrayBuilder;
 import x10.lang.Place;
 
 public class MapReduceArray[M, R]
-{
-   
+{     
     private def distSequential(mr:MapReduce[M, R], data:Array[M]{rank==1}, start:int, length:int):R {
            	   
 	    if (length == 1) {
@@ -142,38 +141,63 @@ public class MapReduceArray[M, R]
     */
 
     public static def main(argv:Array[String]) {
-        val numAsyncs = Int.parse(argv(0));
 
-	val numPlaces = 3;
+        val insize = Int.parseInt(argv(0));
+	val num_trials = Int.parseInt(argv(1));
+	val numAsyncs = Int.parseInt(argv(2));
         Console.OUT.println("Running with "+numAsyncs+" asyncs");
 
-        val mapper:TestClass = new TestClass();
-        var start:Long;
-        var end:Long;
-
-        start = Timer.milliTime();
+	val mapper:TestClass = new TestClass(insize);
+       	
+	//serial result
+	var serialTime:Long = 0;
+	for(t in 0..(num_trials-1)){
+        val start:Long = Timer.milliTime();
         mapper.demonstrateSequential();
-        end = Timer.milliTime();
+        val end:Long = Timer.milliTime();
+	val sequentialTime = end - start;
+	serialTime += sequentialTime;
+	}
 
-        val sequentialTime = end - start;
         Console.OUT.println("Sequential map reduce benchmark completed in "+
-                             sequentialTime+" milliseconds");
+                             serialTime/num_trials+" milliseconds on average.");
 
-        start = Timer.milliTime();
+        // parallel result
+	var parallelTime:Long = 0;
+	for(t in 0..(num_trials-1)){ 
+        var start:Long = Timer.milliTime();
         mapper.demonstrateParallel(numAsyncs);
-        end = Timer.milliTime();
-
-        val parallelTime = end - start;
+        var end:Long = Timer.milliTime();
+        var pTime:Long = end - start;
+	parallelTime += pTime;
+	}
         Console.OUT.println("Parallel map reduce benchmark completed in "+
-                             parallelTime+" milliseconds");
+                             parallelTime/num_trials+" milliseconds on average.");
+
+	//two-place time
+	var twoPlaceTime:Long = 0;
+	for(t in 0..(num_trials-1)){
+	var start:Long = Timer.milliTime();
+	mapper.demonstrateMultiplePlaces(numAsyncs,2);
+	var end:Long = Timer.milliTime();
+	val twoTime = end - start;
+	twoPlaceTime += twoTime;
+	}	
+	Console.OUT.println("Two-Place map reduce benchmark completed in "+
+				       twoPlaceTime/num_trials+" milliseconds on average.");
 	
-	start = Timer.milliTime();
-	mapper.demonstrateMultiplePlaces(numAsyncs,numPlaces);
-	end = Timer.milliTime();
+	//three-place time
+	var threePlaceTime:Long = 0;
+	for(t in 0..(num_trials-1)){
+	var start:Long = Timer.milliTime();
+	mapper.demonstrateMultiplePlaces(numAsyncs,3);
+	var end:Long = Timer.milliTime();
 	val multipleTime = end - start;
-	Console.OUT.println("Multiple-Place map reduce benchmark completed in "+
-				      	   multipleTime+" milliseconds" );
-	
+	threePlaceTime += multipleTime;
+	}
+	Console.OUT.println("Three-Place map reduce benchmark completed in "+
+				      	   threePlaceTime/num_trials+" milliseconds on average." );
+/*	
         if (parallelTime.bitCount() == 0) {
             Console.OUT.println("Parallel computation completed in less than a millisecond.");
             Console.OUT.println("Not showing comparison results");
@@ -184,7 +208,7 @@ public class MapReduceArray[M, R]
 	    Console.OUT.println("Multiple-Place speed up saw improvement of "+speedupMult);
             Console.OUT.println("FrameworkTag: "+numAsyncs+" "+speedup);
         }
-
+*/
     }
 }
 
