@@ -6,12 +6,12 @@ public class TestClass implements MapReduce[String,HashMap[String,Int]], Testabl
         private val distributor:MapReduceArray[String, HashMap[String, Int]];
         private val data:Array[String];
    
-	public def this() {
+	public def this(inputSize:Int) {
 	       distributor = new MapReduceArray[String,HashMap[String,Int]]();
-	       val numFiles = 37;
+	       val numFiles = inputSize;
 	       val dataBuilder:ArrayBuilder[String] = new ArrayBuilder[String](numFiles);
 	       for(i in 0..(numFiles)){
-	       	     dataBuilder.add("tests/two-cities/data/"+i+".txt");
+	       	     dataBuilder.add("tests/data/"+i+".txt");
 	       }
 	       data = dataBuilder.result();
 	}

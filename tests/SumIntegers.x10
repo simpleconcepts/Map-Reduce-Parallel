@@ -4,9 +4,9 @@ public class TestClass implements MapReduce[Int, Int], Testable {
     private val distributor:MapReduceArray[Int, Int];
     private val data:Array[Int];
 
-    public def this() {
+    public def this(inputSize:Int) {
         distributor = new MapReduceArray[Int, Int]();
-        val numInts = 1000000;
+        val numInts = inputSize;
         val dataBuilder:ArrayBuilder[Int] = new ArrayBuilder[Int](numInts);
         for (i in 0..(numInts - 1)) {
             dataBuilder.add(i + 1);

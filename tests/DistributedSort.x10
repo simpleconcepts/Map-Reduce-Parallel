@@ -11,7 +11,24 @@ import x10.util.ArrayBuilder;
 public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
 	private val distributor:MapReduceArray[Array[Int], Array[Int]];
 	private val data:Array[Array[Int]];
-
+	
+	public def this(inputSize:Int,numAsyncs:Int){
+	       distributor = new MapReduceArray[Array[Int], Array[Int]]();
+	       val numSets = 15;
+	       val numInts = inputSize;
+	       var temp:Array[Int];
+	       val dataBuilder:ArrayBuilder[Array[Int]] = new ArrayBuilder[Array[Int]](numSets);
+	       for(var j:Int = 0; j < numSets; j++){
+	       	       temp = new Array[Int](numInts);
+		       val rand:Random = new Random(37*j);
+		       for(var i:Int = 0; i < numInts; i++){
+		       	       temp(i) = rand.nextInt();
+			  }
+		       dataBuilder.add(temp);
+		  }
+		  data = dataBuilder.result();	  
+	} 
+	
 	public def this(){
 	    distributor = new MapReduceArray[Array[Int], Array[Int]]();
 	    val numSets = 15;

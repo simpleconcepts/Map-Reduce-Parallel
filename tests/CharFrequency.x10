@@ -7,12 +7,13 @@ public class TestClass implements MapReduce[String , Array[Int]], Testable {
        private val distributor:MapReduceArray[String ,Array[Int]];
        private val data:Array[String];
        
-       public def this(){
+     
+       public def this(inputSize:Int){
        	      distributor = new MapReduceArray[String , Array[Int]]();
-	      val numFiles = 37;
+	      val numFiles = inputSize;
 	      val dataBuilder:ArrayBuilder[String] = new ArrayBuilder[String](numFiles);
 	      for(i in 1..(numFiles)){
-	      	    dataBuilder.add("tests/two-cities/data/"+i+".txt");
+	      	    dataBuilder.add("tests/data/"+i+".txt");
 	      }
 
 	      data = dataBuilder.result();
