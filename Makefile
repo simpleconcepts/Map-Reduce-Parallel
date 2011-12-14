@@ -1,23 +1,23 @@
 X10CPP=/opt/x10-2.2.0.1/bin/x10c++
 
 # environment variables
-X10_NTHREADS :=24
-X10_NPLACES :=3
+X10_NTHREADS :=1
+X10_NPLACES :=24
 
 # Test Parameters
 NUM_ASYNCS=1 2 4 8 16 24 32 64 128
 NUM_TRIALS=3
 NUM_INTS=100
 SEED=40
-INPUT_SIZE=10000000
-
-
+INPUT_SIZE=10
+PLACES=24
+NODES=1
 default:MapReduceArray.out
 
 MapReduceArray.out: $(NUM_ASYNCS:%=MapReduceArray.%.buildandrun)
 
 MapReduceArray.%.buildandrun: MapReduceArray.exe
-	salloc -n1 srun.x10sock ./MapReduceArray.exe  $(INPUT_SIZE) $(NUM_TRIALS) $* > MapReduceArray.$*.out
+	salloc -N $(NODES) -n $(PLACES) srun.x10sock ./MapReduceArray.exe  $(INPUT_SIZE) $(NUM_TRIALS) $* > MapReduceArray.$*.out
 	@echo "Dumping contents of $(P1).$*.out ... "
 	@grep "" MapReduceArray.$*.out
 	@echo " "
