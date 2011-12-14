@@ -29,7 +29,10 @@ public class TestClass implements MapReduce[Int, Int], Testable {
     public def demonstrateParallel(numAsyncs:Int) {
         distributor.distributeParallel(this, data, numAsyncs);
     }
-
+    
+    public def demonstrateMultiplePlaces(numAsyncs:Int,numPlaces:Int){
+    	distributor.distributeMultiplePlaces(this,data,numAsyncs,numPlaces);
+    }
     public def describe() {
         return "SumIntegers";
     }
