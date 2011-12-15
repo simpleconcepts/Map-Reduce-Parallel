@@ -156,7 +156,8 @@ public class TestClass implements MapReduce[Array[Int],Array[Int]], Testable {
     	}
 	
 	public def demonstrateMultiplePlaces(numAsyncs:Int, numPlaces:Int) {
-	       distributor.distributeMultiplePlaces(this, data,numAsyncs,numPlaces);
+	      // distributor.distributeMultiplePlaces(this, data,numAsyncs,numPlaces);
+	       
 	}
 	
     /* 

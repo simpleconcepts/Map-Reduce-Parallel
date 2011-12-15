@@ -13,7 +13,7 @@ public class TestClass implements MapReduce[String , Array[Int]], Testable {
 	      val numFiles = inputSize;
 	      val dataBuilder:ArrayBuilder[String] = new ArrayBuilder[String](numFiles);
 	      for(i in 1..(numFiles)){
-	      	    dataBuilder.add("tests/data/"+i+".txt");
+	      	    dataBuilder.add("tests/two-cities/data/"+i+".txt");
 	      }
 
 	      data = dataBuilder.result();

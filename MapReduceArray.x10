@@ -1,6 +1,7 @@
 import x10.util.Timer;
 import x10.util.ArrayBuilder;
 import x10.lang.Place;
+import x10.util.Random;
 
 public class MapReduceArray[M, R]
 {     
@@ -59,6 +60,7 @@ public class MapReduceArray[M, R]
         }
         return accumulator;
     }
+
     public static def block(R:Region(1),P:Int):Rail[Region(1)] = {
     	   assert P >= 0;
 	   val low = R.min()(0), high = R.max()(0), count = high-low+1;
@@ -105,7 +107,7 @@ public class MapReduceArray[M, R]
          	    val myA = args(p.id);
                     val myMr = mr;
                     val myNumAsyncs = inNumAsyncs;
-		    async results(p.id) = at(p) (new MapReduceArray[M, R]()).distributeParallel(myMr,myA,myNumAsyncs);
+		    async results(p.id) = at(p)(new MapReduceArray[M, R]()).distributeParallel(myMr,myA,myNumAsyncs);
 	}
 
 	var accumulator:R = results(0);
@@ -146,6 +148,8 @@ public class MapReduceArray[M, R]
 	val num_trials = Int.parseInt(argv(1));
 	val numAsyncs = Int.parseInt(argv(2));
 	val numPlaces = Int.parseInt(argv(3));
+	Console.OUT.println("Input: "+insize);
+	Console.OUT.println("Number of Trials: "+num_trials);
         Console.OUT.println("Running with "+numAsyncs+" asyncs");
 	Console.OUT.println("Running with "+numPlaces+" places");
 	val mapper:TestClass = new TestClass(insize);
