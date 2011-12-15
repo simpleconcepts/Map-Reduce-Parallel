@@ -1,5 +1,13 @@
 The makefile takes as a parameter the name of the target test file. At the
 moment, we have one test file ready:
 
-make TARGET_FILE=SumIntegers.x10
-./a.out
+To change number of asyncs, nodes, inputs look adjust values in the makefile.
+
+To Build and Run:
+(Note: Max Input Size is 37 Chapters)
+make TARGET_CLASS=CharFrequency.x10
+make TARGET_CLASS=WordCount.x10
+
+make TARGET_CLASS=SumIntegers.x10
+make TARGET_CLASS=DistributedSort.x10
+
